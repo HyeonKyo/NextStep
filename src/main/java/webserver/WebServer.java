@@ -25,7 +25,8 @@ public class WebServer {
 
             // 클라이언트가 연결될때까지 대기한다.
             Socket connection;
-            while ((connection = listenSocket.accept()) != null) {
+            while ((connection = listenSocket.accept()) != null) { //사용자 요청 대기
+                //요청이 들어오면 클라이언트와의 연결을 전달하여 새로운 쓰레드 생성 및 실행
                 RequestHandler requestHandler = new RequestHandler(connection);
                 requestHandler.start();
             }
