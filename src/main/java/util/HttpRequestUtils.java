@@ -21,7 +21,10 @@ public class HttpRequestUtils {
         String url = st.nextToken();
         String[] splitUrl = url.split("\\?");
         String uri = splitUrl[0];
-        String queryString = splitUrl[1];
+        String queryString = null;
+        if (splitUrl.length >= 2) {
+            queryString = splitUrl[1];
+        }
         String version = st.nextToken();
         return new StartLine(method, uri, queryString, version);
     }

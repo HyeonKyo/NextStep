@@ -21,6 +21,17 @@ public class HttpRequestUtilsTest {
     }
 
     @Test
+    void parse_startLine_not_queryString() {
+        String line = "GET /user/index.html HTTP/1.1";
+
+        StartLine startLine = HttpRequestUtils.parseStartLine(line);
+        assertThat(startLine.getMethod()).isEqualTo("GET");
+        assertThat(startLine.getUrl()).isEqualTo("/user/index.html");
+        assertThat(startLine.getQueryString()).isNull();
+        assertThat(startLine.getVersion()).isEqualTo("HTTP/1.1");
+    }
+
+    @Test
     void parseQueryString() {
         String queryString = "userId=javajigi";
         Map<String, String> parameters = HttpRequestUtils.parseQueryString(queryString);
