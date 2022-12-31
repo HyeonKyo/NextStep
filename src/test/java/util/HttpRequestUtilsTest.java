@@ -1,9 +1,14 @@
 package util;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import util.HttpRequestUtils.Pair;
+import webserver.HttpHeader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -90,5 +95,27 @@ public class HttpRequestUtilsTest {
         String header = "Content-Length: 59";
         Pair pair = HttpRequestUtils.parseHeader(header);
         assertThat(pair).isEqualTo(new Pair("Content-Length", "59"));
+    }
+
+    @Test
+    void parseHeaders() throws IOException {
+        System.setIn(new ByteArrayInputStream("Host: localhost:8080\nContent-Length: 59\n\n".getBytes()));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        HttpHeader httpHeader = HttpRequestUtils.parseHeaders(br);
+
+        assertThat(httpHeader.get("Host")).isEqualTo("localhost:8080");
+        assertThat(httpHeader.get("Content-Length")).isEqualTo("59");
+    }
+
+    @Test
+    void parseData() {
+        String data = "userId=asd&password=asd&name=asd&email=asd@asd";
+        Map<String, String> map = HttpRequestUtils.parseData(data);
+
+        assertThat(map.get("userId")).isEqualTo("asd");
+        assertThat(map.get("password")).isEqualTo("asd");
+        assertThat(map.get("name")).isEqualTo("asd");
+        assertThat(map.get("email")).isEqualTo("asd@asd");
     }
 }

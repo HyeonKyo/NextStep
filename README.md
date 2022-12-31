@@ -24,11 +24,6 @@
   * Header -> Map
   * Data -> Map
 
-# 기능 정리
-* HTTPRequest.parseRequest(br);
-
-
-
 ### 요구사항 1 - http://localhost:8080/index.html로 접속시 응답
 * 
 
@@ -36,7 +31,9 @@
 * 
 
 ### 요구사항 3 - post 방식으로 회원가입
-* 
+* header 파싱
+* content-length값 찾아와서 readData
+* 해당 Data를 파싱하여 User에 저장하기
 
 ### 요구사항 4 - redirect 방식으로 이동
 * 
