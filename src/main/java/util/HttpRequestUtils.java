@@ -1,21 +1,27 @@
 package util;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-
 public class HttpRequestUtils {
-
     public static final String METHOD = "method";
     public static final String URL = "url";
     public static final String VERSION = "version";
 
+    private static final Logger log = LoggerFactory.getLogger(HttpRequestUtils.class);
+
     public static StartLine parseStartLine(String startLine) {
+        if (startLine == null || startLine.isBlank()) {
+            return null;
+        }
         StringTokenizer st = new StringTokenizer(startLine, " ");
         String method = st.nextToken();
         String url = st.nextToken();
@@ -26,6 +32,7 @@ public class HttpRequestUtils {
             queryString = splitUrl[1];
         }
         String version = st.nextToken();
+        log.debug("method = {}, url = {}, queryString = {}, version = {}", method, uri, queryString, version);
         return new StartLine(method, uri, queryString, version);
     }
 

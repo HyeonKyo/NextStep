@@ -3,7 +3,9 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.Map;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
@@ -28,16 +30,19 @@ public class RequestHandler extends Thread {
             String firstLine = br.readLine();
             StartLine startLine = HttpRequestUtils.parseStartLine(firstLine);
             //2. Header 파싱 ->
-
             //3. Data 파싱 -> readData 활용
-
             //4. 3개의 데이터 조합해서 할일 처리
-            //- url이 webapp폴더에 있는 파일일 경우 -> 파일 읽기
-            //- /create 등 원하는 기능인 경우 -> 해당 기능 실행, 응답 데이터 만들기
+            //  - url이 webapp폴더에 있는 파일일 경우 -> 파일 읽기
+            //  - /create 등 원하는 기능인 경우 -> 해당 기능 실행, 응답 데이터 만들기
             byte[] body = "Hello World".getBytes();
-            if (!"/".equals(startLine.getUrl())) {
+            if ("/index.html".equals(startLine.getUrl())) {
                 //body = file에서 읽어오기
                 body = Files.readAllBytes(new File("./webapp" + startLine.getUrl()).toPath());
+            } else if ("/user/create".equals(startLine.getUrl())) {
+                //회원가입 처리하기
+                Map<String, String> map = HttpRequestUtils.parseQueryString(startLine.getQueryString());
+                User user = new User(map.get("userId"), map.get("password"), map.get("name"), map.get("email"));
+                log.debug("Join user = {}", user);
             }
             //5. 응답 데이터 출력
 

@@ -10,13 +10,9 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
-
-    // https://mvnrepository.com/artifact/com.google.code.google-collections/google-collect
-//    implementation group: 'com.google.code.google-collections', name: 'google-collect', version: 'snapshot-20080530'
-
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
+    implementation 'ch.qos.logback:logback-classic:1.4.1'
+    implementation 'org.slf4j:slf4j-api:2.0.3'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.23.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
