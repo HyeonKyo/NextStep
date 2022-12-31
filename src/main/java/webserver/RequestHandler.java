@@ -22,8 +22,20 @@ public class RequestHandler extends Thread {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            //1. 메타 정보
+            //1. Start Line 파싱 -> Method, url, version 파싱
             String startLine = br.readLine();
+
+
+            //2. Header 파싱 ->
+
+            //3. Data 파싱 -> readData 활용
+
+            //4. 3개의 데이터 조합해서 할일 처리
+            //- url이 webapp폴더에 있는 파일일 경우 -> 파일 읽기
+            //- /create 등 원하는 기능인 경우 -> 해당 기능 실행, 응답 데이터 만들기
+
+            //5. 응답 데이터 출력
+
             String uri = startLine.split(" ")[1];
             byte[] body = "Hello World".getBytes();
             if (!"/".equals(uri)) {
