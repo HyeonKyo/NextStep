@@ -29,4 +29,10 @@ public class StudyTest {
         String s = String.format("%s=%s", "asd", value.toString());
         System.out.println(s);
     }
+
+    @Test
+    void booleanParse() {
+        boolean b = Boolean.parseBoolean(null);
+        System.out.println(b);
+    }
 }

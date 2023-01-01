@@ -37,7 +37,7 @@ public class RequestHandler extends Thread {
             HttpRequestHeader requestHeader = HttpRequestUtils.parseHeaders(br);
 
             Map<String, String> dataMap = null;
-            if ("POST".equals(startLine.getMethod())) {
+            if (startLine != null && "POST".equals(startLine.getMethod())) {
                 int contentLength = Integer.parseInt(requestHeader.get(HttpRequestHeader.CONTENT_LENGTH));
                 String data = IOUtils.readData(br, contentLength);
                 log.debug("HTTP Request Data = {}", data);
@@ -65,6 +65,18 @@ public class RequestHandler extends Thread {
                 httpStatus.setStatus(302);
                 responseHeader.set302Location(requestHeader.get("Host"), uri);
                 responseHeader.addCookie("logined", isSuccess);
+            } else if ("/user/list".equals(startLine.getUrl())) {
+                String uri = "/user/login";
+                boolean logined = Boolean.parseBoolean(requestHeader.getCookie("logined"));
+                log.debug("Is Login = {}", logined);
+                if (!logined) {
+                    httpStatus.setStatus(302);
+                    responseHeader.set302Location(requestHeader.get("Host"), uri);
+                } else {
+                    httpStatus.setStatus(200);
+                    String path = "./webapp/user/list.html";
+                    body = Files.readAllBytes(new File(path).toPath());
+                }
             } else {
                 String url = startLine.getUrl();
                 if ("/".equals(url)) {
