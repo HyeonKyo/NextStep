@@ -22,4 +22,11 @@ public class StudyTest {
         System.out.println(line);
         assertThat(line).isEqualTo("");
     }
+
+    @Test
+    void string_format_test() {
+        Object value = true;
+        String s = String.format("%s=%s", "asd", value.toString());
+        System.out.println(s);
+    }
 }

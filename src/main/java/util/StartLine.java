@@ -28,4 +28,14 @@ public class StartLine {
     public String getVersion() {
         return version;
     }
+
+    @Override
+    public String toString() {
+        return "StartLine{" +
+                "method='" + method + '\'' +
+                ", url='" + url + '\'' +
+                ", queryString='" + queryString + '\'' +
+                ", version='" + version + '\'' +
+                '}';
+    }
 }

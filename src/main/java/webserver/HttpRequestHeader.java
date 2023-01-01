@@ -5,12 +5,12 @@ import util.HttpRequestUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpHeader {
+public class HttpRequestHeader {
     public static final String CONTENT_LENGTH = "Content-Length";
 
     private Map<String, String> headers;
 
-    public HttpHeader() {
+    public HttpRequestHeader() {
         headers = new HashMap<>();
     }
 

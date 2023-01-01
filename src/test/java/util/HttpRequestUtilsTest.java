@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import util.HttpRequestUtils.Pair;
-import webserver.HttpHeader;
+import webserver.HttpRequestHeader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -102,10 +102,10 @@ public class HttpRequestUtilsTest {
         System.setIn(new ByteArrayInputStream("Host: localhost:8080\nContent-Length: 59\n\n".getBytes()));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        HttpHeader httpHeader = HttpRequestUtils.parseHeaders(br);
+        HttpRequestHeader httpRequestHeader = HttpRequestUtils.parseHeaders(br);
 
-        assertThat(httpHeader.get("Host")).isEqualTo("localhost:8080");
-        assertThat(httpHeader.get("Content-Length")).isEqualTo("59");
+        assertThat(httpRequestHeader.get("Host")).isEqualTo("localhost:8080");
+        assertThat(httpRequestHeader.get("Content-Length")).isEqualTo("59");
     }
 
     @Test

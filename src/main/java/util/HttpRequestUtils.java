@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.HttpHeader;
+import webserver.HttpRequestHeader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class HttpRequestUtils {
 
     public static StartLine parseStartLine(String startLine) {
         log.debug("Parse StartLine = {}", startLine);
-        if (startLine == null || startLine.isBlank()) {
+        if (Strings.isNullOrEmpty(startLine)) {
             return null;
         }
         StringTokenizer st = new StringTokenizer(startLine, " ");
@@ -78,19 +78,22 @@ public class HttpRequestUtils {
         return getKeyValue(header, ": ");
     }
 
-    public static HttpHeader parseHeaders(BufferedReader br) throws IOException {
-        HttpHeader httpHeader = new HttpHeader();
+    public static HttpRequestHeader parseHeaders(BufferedReader br) throws IOException {
+        HttpRequestHeader httpRequestHeader = new HttpRequestHeader();
         String headerLine = br.readLine();
-        while (headerLine != null && !headerLine.isBlank()) {
+        while (!Strings.isNullOrEmpty(headerLine)) {
             Pair pair = parseHeader(headerLine);
-            httpHeader.save(pair);
+            httpRequestHeader.save(pair);
             headerLine = br.readLine();
         }
-        return httpHeader;
+        return httpRequestHeader;
     }
 
     public static Map<String, String> parseData(String data) {
         Map<String, String> dataMap = new HashMap<>();
+        if (Strings.isNullOrEmpty(data)) {
+            return dataMap;
+        }
         StringTokenizer st = new StringTokenizer(data, "&");
         while (st.hasMoreTokens()) {
             String[] token = st.nextToken().split("=");
