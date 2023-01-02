@@ -85,6 +85,10 @@ public class RequestHandler extends Thread {
                 String path = String.format("./webapp%s", url);
                 body = Files.readAllBytes(new File(path).toPath());
                 httpStatus.setStatus(200);
+                String accept = requestHeader.get("Accept");
+                if (url.contains("css") && accept.contains("text/css")) {
+                    responseHeader.set("Content-Type", "text/css");
+                }
             }
             response(dos, httpStatus, responseHeader, body);
         } catch (IOException e) {
@@ -98,7 +102,6 @@ public class RequestHandler extends Thread {
             sb.append(status.getVersion()).append(" ")
                             .append(status.getStatusNo()).append(" ")
                             .append(status.getStatus()).append(NEWLINE);
-            sb.append("Content-Type: text/html;charset=utf-8\r\n");
             sb.append("Content-Length: ").append(body.length).append(NEWLINE);
             sb.append(header.getHeaders()).append(NEWLINE);
             log.debug("Response Header = {}", sb);

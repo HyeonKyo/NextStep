@@ -28,4 +28,8 @@ public class HttpResponseHeader {
                         .append(entry.getValue()).append("\n"));
         return sb.toString();
     }
+
+    public void set(String key, String value) {
+        headers.put(key, value);
+    }
 }
