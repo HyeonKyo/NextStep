@@ -13,7 +13,6 @@ import java.net.Socket;
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private static final String DEFAULT_URL = "/index.html";
-    private static final String NEWLINE = "\r\n";
 
     private Socket connection;
 
