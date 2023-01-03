@@ -8,6 +8,10 @@ public class HttpStatus {
     private int statusNo;
     private String status;
 
+    public HttpStatus() {
+        this("HTTP/1.1");
+    }
+
     public HttpStatus(String version) {
         this.version = version;
     }
