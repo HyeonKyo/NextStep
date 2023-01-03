@@ -18,23 +18,25 @@ public class HttpRequestUtils {
 
     private static final Logger log = LoggerFactory.getLogger(HttpRequestUtils.class);
 
-    public static StartLine parseStartLine(String startLine) {
-        log.debug("Parse StartLine = {}", startLine);
-        if (Strings.isNullOrEmpty(startLine)) {
+    public static RequestLine parseRequestLine(String requestLine) {
+        log.debug("Request line = {}", requestLine);
+        if (Strings.isNullOrEmpty(requestLine)) {
             return null;
         }
-        StringTokenizer st = new StringTokenizer(startLine, " ");
+        StringTokenizer st = new StringTokenizer(requestLine, " ");
         String method = st.nextToken();
         String url = st.nextToken();
         String[] splitUrl = url.split("\\?");
-        String uri = splitUrl[0];
+        String path = splitUrl[0];
         String queryString = null;
         if (splitUrl.length >= 2) {
             queryString = splitUrl[1];
         }
         String version = st.nextToken();
-        log.debug("method = {}, url = {}, queryString = {}, version = {}", method, uri, queryString, version);
-        return new StartLine(method, uri, queryString, version);
+        log.debug("method = {}, url = {}, queryString = {}, version = {}", method, path, queryString, version);
+
+        Map<String, String> params = parseQueryString(queryString);
+        return new RequestLine(method, path, version, params);
     }
 
     /**

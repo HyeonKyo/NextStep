@@ -25,15 +25,16 @@
   * Data -> Map
 
 ### 요구사항 1 - http://localhost:8080/index.html로 접속시 응답
-* 
+* 요청을 한 번만 보내도 여러 개의 요청이 오는 이유는?
+  * 서버가 웹 페이지를 구성하는 자원(HTML, CSS, JS, 이미지 등)을 한 번에 보내주지 않기 때문.
+  * 첫 번째로 html만 보내고, 브라우저가 html을 분석하여 추가 자원 요청
 
 ### 요구사항 2 - get 방식으로 회원가입
 * 
 
 ### 요구사항 3 - post 방식으로 회원가입
-* header 파싱
-* content-length값 찾아와서 readData
-* 해당 Data를 파싱하여 User에 저장하기
+* HTML은 GET, POST 메소드만 지원한다.
+* 최근에는 REST API와 AXIOS 기반으로 웹 App을 개발하기 떄문에 PUT, DELETE까지 활용하는 것을 추천
 
 ### 요구사항 4 - redirect 방식으로 이동
 * 
@@ -42,7 +43,7 @@
 * 
 
 ### 요구사항 6 - stylesheet 적용
-* 
+* 브라우저는 서버로부터 응답을 받은 후 Content-Type 헤더 값을 통해 본문 컨텐츠의 타입을 판별한다.
 
 ### heroku 서버에 배포 후
 * 

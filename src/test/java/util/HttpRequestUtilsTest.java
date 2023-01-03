@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import util.HttpRequestUtils.Pair;
+import webserver.HttpMethod;
 import webserver.HttpRequestHeader;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,22 +19,21 @@ public class HttpRequestUtilsTest {
     void parseStartLine() {
         String line = "GET /user/create?userId=asd HTTP/1.1";
 
-        StartLine startLine = HttpRequestUtils.parseStartLine(line);
-        assertThat(startLine.getMethod()).isEqualTo("GET");
-        assertThat(startLine.getUrl()).isEqualTo("/user/create");
-        assertThat(startLine.getQueryString()).isEqualTo("userId=asd");
-        assertThat(startLine.getVersion()).isEqualTo("HTTP/1.1");
+        RequestLine requestLine = HttpRequestUtils.parseRequestLine(line);
+        assertThat(requestLine.getMethod()).isEqualTo(HttpMethod.GET);
+        assertThat(requestLine.getPath()).isEqualTo("/user/create");
+        assertThat(requestLine.getParams().get("userId")).isEqualTo("asd");
+        assertThat(requestLine.getVersion()).isEqualTo("HTTP/1.1");
     }
 
     @Test
     void parse_startLine_not_queryString() {
         String line = "GET /user/index.html HTTP/1.1";
 
-        StartLine startLine = HttpRequestUtils.parseStartLine(line);
-        assertThat(startLine.getMethod()).isEqualTo("GET");
-        assertThat(startLine.getUrl()).isEqualTo("/user/index.html");
-        assertThat(startLine.getQueryString()).isNull();
-        assertThat(startLine.getVersion()).isEqualTo("HTTP/1.1");
+        RequestLine requestLine = HttpRequestUtils.parseRequestLine(line);
+        assertThat(requestLine.getMethod()).isEqualTo(HttpMethod.GET);
+        assertThat(requestLine.getPath()).isEqualTo("/user/index.html");
+        assertThat(requestLine.getVersion()).isEqualTo("HTTP/1.1");
     }
 
     @Test

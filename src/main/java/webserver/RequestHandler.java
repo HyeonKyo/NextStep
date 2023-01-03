@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
 import util.IOUtils;
-import util.StartLine;
+import util.RequestLine;
 
 import java.io.*;
 import java.net.Socket;
@@ -29,63 +29,54 @@ public class RequestHandler extends Thread {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            DataOutputStream dos = new DataOutputStream(out);
+            HttpRequest request = new HttpRequest(in);
 
-            StartLine startLine = HttpRequestUtils.parseStartLine(br.readLine());
-            log.debug("{}", startLine);
-            HttpRequestHeader requestHeader = HttpRequestUtils.parseHeaders(br);
-
-            Map<String, String> dataMap = null;
-            if (startLine != null && "POST".equals(startLine.getMethod())) {
-                int contentLength = Integer.parseInt(requestHeader.get(HttpRequestHeader.CONTENT_LENGTH));
-                String data = IOUtils.readData(br, contentLength);
-                log.debug("HTTP Request Data = {}", data);
-                dataMap = HttpRequestUtils.parseData(data);
-            }
-
-            HttpStatus httpStatus = new HttpStatus(startLine.getVersion());
+            HttpStatus httpStatus = new HttpStatus(request.getVersion());
             HttpResponseHeader responseHeader = new HttpResponseHeader();
+            DataOutputStream dos = new DataOutputStream(out);
             byte[] body = new byte[0];
-            if ("/user/create".equals(startLine.getUrl())) {
-                User user = new User(dataMap.get("userId"), dataMap.get("password"), dataMap.get("name"), dataMap.get("email"));
+            if ("/user/create".equals(request.getPath())) {
+                User user = new User(request.getParameter("userId"),
+                        request.getParameter("password"),
+                        request.getParameter("name"),
+                        request.getParameter("email"));
                 log.debug("Join user = {}", user);
                 DataBase.addUser(user);
 
                 httpStatus.setStatus(302);
-                responseHeader.set302Location(requestHeader.get("Host"), DefaultURL);
-            } else if ("/user/login".equals(startLine.getUrl())) {
+                responseHeader.set302Location(request.getHeader("Host"), DefaultURL);
+            } else if ("/user/login".equals(request.getPath())) {
                 String uri = DefaultURL;
                 boolean isSuccess = true;
-                User user = DataBase.findUserById(dataMap.get("userId"));
+                User user = DataBase.findUserById(request.getParameter("userId"));
                 if (user == null) {
                     isSuccess = false;
                     uri = "/user/login_failed.html";
                 }
                 httpStatus.setStatus(302);
-                responseHeader.set302Location(requestHeader.get("Host"), uri);
+                responseHeader.set302Location(request.getHeader("Host"), uri);
                 responseHeader.addCookie("logined", isSuccess);
-            } else if ("/user/list".equals(startLine.getUrl())) {
+            } else if ("/user/list".equals(request.getPath())) {
                 String uri = "/user/login";
-                boolean logined = Boolean.parseBoolean(requestHeader.getCookie("logined"));
+                boolean logined = Boolean.parseBoolean(request.getCookie("logined"));
                 log.debug("Is Login = {}", logined);
                 if (!logined) {
                     httpStatus.setStatus(302);
-                    responseHeader.set302Location(requestHeader.get("Host"), uri);
+                    responseHeader.set302Location(request.getHeader("Host"), uri);
                 } else {
                     httpStatus.setStatus(200);
                     String path = "./webapp/user/list.html";
                     body = Files.readAllBytes(new File(path).toPath());
                 }
             } else {
-                String url = startLine.getUrl();
+                String url = request.getPath();
                 if ("/".equals(url)) {
                     url = DefaultURL;
                 }
                 String path = String.format("./webapp%s", url);
                 body = Files.readAllBytes(new File(path).toPath());
                 httpStatus.setStatus(200);
-                String accept = requestHeader.get("Accept");
+                String accept = request.getHeader("Accept");
                 if (url.contains("css") && accept.contains("text/css")) {
                     responseHeader.set("Content-Type", "text/css");
                 }
